@@ -11,7 +11,7 @@ Page.prototype = {
     constructor: Page,
 
     addText: function (text) {
-        this.text += text;
+        this.text += " " + text;
     },
 
     removeText: function () {
@@ -21,6 +21,11 @@ Page.prototype = {
     printText: function () {
         console.log(this.title);
         console.log(this.text);
+    },
+
+    searchWord: function (word) {
+        var positionOfWord = this.text.search(word);
+        console.log("Dumata se namira na " + positionOfWord + " poziciq.")
     }
 }
 
@@ -70,7 +75,7 @@ SimpleNotepad.prototype = Object.create(Page.prototype, {
             this.pages[indexOfPage].text = "";
             this.pages.forEach(function (element) {
                 if (this.pages.indexOf(this.pages[indexOfPage]) == this.pages.indexOf(element)) {
-                    this.pages[indexOfPage].text += " " + textToAdd;
+                    this.pages[indexOfPage].text += textToAdd;
                 }
             }, this);
         }
@@ -90,6 +95,14 @@ SimpleNotepad.prototype = Object.create(Page.prototype, {
                 console.log(element.text);
             }, this);
         }
+    },
+
+    searchWordPage: {
+        value: function (word) {
+            this.pages.forEach(function (element) {
+                element.searchWord(word);
+            }, this);
+        }
     }
 })
 
@@ -101,32 +114,106 @@ function SecureNotepad(numberOfPages, password) {
 SecureNotepad.prototype = Object.create(SimpleNotepad.prototype, {
     constructor: SecureNotepad,
 
-    addTexToPage: {
+    addTextToPageSecure: {
         value: function (password, indexOfPage, textToAdd) {
             if (password == this.password) {
-                addTextToPage.call(this, indexOfPage, textToAdd);
+                this.addTextToPage(indexOfPage, textToAdd);
             }
         }
+    },
+
+    removeTextAndAddSecure: {
+        value: function (password, indexOfPage, textToAdd) {
+            if (password == this.password) {
+                this.removeTextAndAdd(indexOfPage, textToAdd);
+            }
+        }
+    },
+
+    deleteTextSecure: {
+        value: function (password, indexOfPage) {
+            if (password == this.password) {
+                this.deleteText(indexOfPage);
+            }
+        }
+    },
+
+    printPagesSecure: {
+        value: function (password) {
+            if (password == this.password) {
+                this.printPages();
+            }
+        }
+    }
+})
+
+function ElectronicDevice() {
+    this.isStarted = false;
+}
+
+ElectronicDevice.prototype = {
+    constructor: ElectronicDevice,
+
+    start: function () {
+        if (this.isStarted != true) {
+            this.isStarted = true;
+        }
+    },
+    stop: function () {
+        if (this.isStarted != false) {
+            this.isStarted = false;
+        }
+    }
+}
+
+function ElectronicSecureNotepad(numberOfPages, password) {
+    ElectronicDevice.call(this);
+    SecureNotepad.call(this, numberOfPages, password);
+    // if (this.isStarted != true) {
+    //     console.log("ElectronicDevice must be started first!!")
+    // }
+}
+
+ElectronicSecureNotepad.prototype = Object.create(SecureNotepad.prototype, {
+    constructor: {
+        value: ElectronicSecureNotepad
     }
 })
 
 
 
 
-var firstPage = new Page("baba ganush", "baba ganush e salata s magdanoz");
+
+var firstPage = new Page("1", "baba ganush e salata s magdanoz");
 var secondPage = new Page("2", "baba ganush e salata s magdanoz");
 var thirdPage = new Page("3", "baba ganush e salata s magdanoz");
 var fourthPage = new Page("4", "baba ganush e salata s magdanoz");
 var belejnik = new SimpleNotepad(5);
 
+firstPage.addText("qica, chushki");
+firstPage.printText();
+firstPage.removeText();
+firstPage.printText();
 
-// belejnik.addPage(firstPage);
-// belejnik.printPages();
+belejnik.addPage(firstPage);
+belejnik.removeTextAndAdd(0, "blablabla");
+belejnik.addTextToPage(0, "Niki go dobavqm tuka");
+belejnik.printPages();
+// console.log(belejnik);
 
 
 
 var skritBelej = new SecureNotepad (5, "papam");
 skritBelej.addPage(firstPage);
 skritBelej.addPage(secondPage);
-skritBelej.addTextToPage("papam", 0, "hello leleoeleoel");
-console.log(skritBelej);
+skritBelej.addTextToPageSecure('papam', 0, "hello leleoeleoel");
+skritBelej.pages[0].searchWord("hello");
+skritBelej.searchWordPage ("hello");
+skritBelej.removeTextAndAddSecure("papam", 1, "hello leleoeleoel");
+skritBelej.printPages();
+
+var elecDev = new ElectronicDevice(10);
+var elecDev1234 = new ElectronicSecureNotepad(10, "gaga");
+elecDev.start();
+elecDev.stop();
+console.log(elecDev1234);
