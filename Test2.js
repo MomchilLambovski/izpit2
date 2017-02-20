@@ -54,9 +54,9 @@ SimpleNotepad.prototype = Object.create(Page.prototype, {
         }
     },
 
-    addTexToPage: {
-        value: function (indexOfPage, textToAdd){
-            this.pages.forEach(function(element) {
+    addTextToPage: {
+        value: function (indexOfPage, textToAdd) {
+            this.pages.forEach(function (element) {
                 if (this.pages.indexOf(this.pages[indexOfPage]) == this.pages.indexOf(element)) {
                     this.pages[indexOfPage].text += " " + textToAdd;
                 }
@@ -66,29 +66,52 @@ SimpleNotepad.prototype = Object.create(Page.prototype, {
 
     removeTextAndAdd: {
 
-        value: function (indexOfPage, textToAdd){
+        value: function (indexOfPage, textToAdd) {
             this.pages[indexOfPage].text = "";
-            this.pages.forEach(function(element) {
+            this.pages.forEach(function (element) {
                 if (this.pages.indexOf(this.pages[indexOfPage]) == this.pages.indexOf(element)) {
                     this.pages[indexOfPage].text += " " + textToAdd;
                 }
             }, this);
         }
-    }, 
+    },
 
     deleteText: {
 
-        value: function (indexOfPage){
+        value: function (indexOfPage) {
             this.pages[indexOfPage].text = "";
         }
     },
 
-    printPage: {
-        value: function (indexOfPage){
-            console.log()
+    printPages: {
+        value: function () {
+            this.pages.forEach(function (element) {
+                console.log(element.title);
+                console.log(element.text);
+            }, this);
         }
     }
 })
+
+function SecureNotepad(numberOfPages, password) {
+    SimpleNotepad.call(this, numberOfPages);
+    this.password = password;
+}
+
+SecureNotepad.prototype = Object.create(SimpleNotepad.prototype, {
+    constructor: SecureNotepad,
+
+    addTexToPage: {
+        value: function (password, indexOfPage, textToAdd) {
+            if (password == this.password) {
+                addTextToPage.call(this, indexOfPage, textToAdd);
+            }
+        }
+    }
+})
+
+
+
 
 var firstPage = new Page("baba ganush", "baba ganush e salata s magdanoz");
 var secondPage = new Page("2", "baba ganush e salata s magdanoz");
@@ -96,14 +119,14 @@ var thirdPage = new Page("3", "baba ganush e salata s magdanoz");
 var fourthPage = new Page("4", "baba ganush e salata s magdanoz");
 var belejnik = new SimpleNotepad(5);
 
-belejnik.addPage(firstPage);
-belejnik.addPage(secondPage);
-belejnik.addPage(thirdPage);
-belejnik.addPage(fourthPage);
-belejnik.addPage(fourthPage);
-belejnik.addPage(fourthPage);
 
-belejnik.deleteText(0);
+// belejnik.addPage(firstPage);
+// belejnik.printPages();
 
 
-console.log(belejnik);
+
+var skritBelej = new SecureNotepad (5, "papam");
+skritBelej.addPage(firstPage);
+skritBelej.addPage(secondPage);
+skritBelej.addTextToPage("papam", 0, "hello leleoeleoel");
+console.log(skritBelej);
