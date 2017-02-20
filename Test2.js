@@ -67,7 +67,25 @@ SimpleNotepad.prototype = Object.create(Page.prototype, {
     removeTextAndAdd: {
 
         value: function (indexOfPage, textToAdd){
-            
+            this.pages[indexOfPage].text = "";
+            this.pages.forEach(function(element) {
+                if (this.pages.indexOf(this.pages[indexOfPage]) == this.pages.indexOf(element)) {
+                    this.pages[indexOfPage].text += " " + textToAdd;
+                }
+            }, this);
+        }
+    }, 
+
+    deleteText: {
+
+        value: function (indexOfPage){
+            this.pages[indexOfPage].text = "";
+        }
+    },
+
+    printPage: {
+        value: function (indexOfPage){
+            console.log()
         }
     }
 })
@@ -85,7 +103,7 @@ belejnik.addPage(fourthPage);
 belejnik.addPage(fourthPage);
 belejnik.addPage(fourthPage);
 
-belejnik.addTexToPage(0, "hello");
+belejnik.deleteText(0);
 
 
 console.log(belejnik);
